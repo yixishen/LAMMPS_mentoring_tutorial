@@ -1,0 +1,26 @@
+# LAMMPS runtime outputs
+log.lammps
+log.*
+screen.*
+restart.*
+*.restart
+*.lammpstrj
+dump.*
+*.dump
+*.xyz
+*.cfg
+
+# Large visualization/render outputs
+*.mp4
+*.avi
+*.mov
+*.gif
+*.png
+*.jpg
+*.jpeg
+
+# Temporary local work
+outputs/
+scratch/
+__pycache__/
+.DS_Store
