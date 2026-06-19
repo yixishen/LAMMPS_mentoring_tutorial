@@ -4,17 +4,23 @@ This exercise teaches students how to calculate elastic constants with LAMMPS
 and why the result is one of the first checks to run before using a potential
 for production simulations.
 
-Use the official LAMMPS `examples/ELASTIC` directory as the starting point. The
-LAMMPS documentation describes this zero-temperature method as deforming the
-simulation box in small strain directions with `change_box` and measuring the
-resulting stress response. The finite-temperature examples live in
-`examples/ELASTIC_T` and require more careful averaging.
+Start with the included example in `runnable_lj_fcc/`. It is an original,
+compact teaching example that uses a Lennard-Jones FCC crystal, so students can
+run it without downloading a separate potential file. The official LAMMPS
+`examples/ELASTIC` directory is still a useful reference once students
+understand the flow. The LAMMPS documentation describes the zero-temperature
+method as deforming the simulation box in small strain directions with
+`change_box` and measuring the resulting stress response. The
+finite-temperature examples live in `examples/ELASTIC_T` and require more
+careful averaging.
 
 ## Learning Goals
 
 After this exercise, students should be able to:
 
-- Run the official `ELASTIC` example.
+- Run the included `runnable_lj_fcc` example.
+- Understand what the official `ELASTIC` example is doing when they see it
+  later.
 - Explain what an elastic constant means physically.
 - Identify `C11`, `C12`, and `C44` for a cubic crystal.
 - Convert pressure units when needed.
@@ -45,22 +51,21 @@ it. Since `1 GPa = 10000 bar`, many LAMMPS elastic scripts multiply stresses by
 `1.0e-4` to report elastic constants in GPa. Always check the conversion factor
 inside the script before comparing to literature values.
 
-## Step 1: Copy The Official Example
+## Step 1: Run The Included Example
 
-Do not edit the installed LAMMPS example in place. Copy it into your own work
-folder:
+From the repository root:
 
 ```bash
-mkdir -p ~/lammps-work/elastic_constants
-cp -r /path/to/lammps/examples/ELASTIC ~/lammps-work/elastic_constants/
-cd ~/lammps-work/elastic_constants/ELASTIC
+cd examples/elastic_constants/runnable_lj_fcc
+lmp -in in.relax_lj
+lmp -in in.c11_c12_lj
+lmp -in in.c44_lj
 ```
 
-The exact examples path depends on your installation. If you built from source,
-it is usually:
+If your LAMMPS executable has another name, replace `lmp` with that name:
 
 ```bash
-/path/to/lammps/examples/ELASTIC
+lammps_serial -in in.relax_lj
 ```
 
 ## Step 2: Inspect The Files
@@ -73,31 +78,28 @@ ls
 
 Typical files include:
 
-- `in.elastic`: main driver script.
-- `init.mod`: units, boundary conditions, atom style, lattice, and geometry.
-- `potential.mod`: pair style and potential settings.
-- `displace.mod`: small box deformations and stress measurements.
+- `in.relax_lj`: creates and relaxes a small FCC Lennard-Jones crystal.
+- `in.c11_c12_lj`: applies a small x-direction strain and estimates `C11` and
+  `C12`.
+- `in.c44_lj`: applies a small shear strain and estimates `C44`.
+- `README.md`: explains what each script does.
 
-The exact filenames can change with LAMMPS versions, so treat this as a map of
-the workflow rather than a memorized file list.
+These scripts are intentionally short. Students should be able to identify the
+initialization, structure creation, potential, minimization, deformation, and
+output sections.
 
-## Step 3: Run The Zero-Temperature Calculation
+## Step 3: Understand The Zero-Temperature Calculation
 
-Run:
+The included example uses three steps:
 
-```bash
-lmp -in in.elastic
-```
+1. Relax the initial crystal so the pressure is close to zero.
+2. Apply a small strain with `change_box`.
+3. Minimize again and calculate elastic constants from stress change divided by
+   strain.
 
-or, if your executable has another name:
-
-```bash
-lammps_serial -in in.elastic
-```
-
-The run should be fast because this is a small zero-temperature calculation.
-Check the end of `log.lammps` and any generated output files for the reported
-elastic constants.
+This is a teaching calculation, not a publication-quality elastic workflow.
+The official `examples/ELASTIC` and `examples/ELASTIC_T` directories show more
+complete approaches.
 
 ## Step 4: Record The Result
 
@@ -123,15 +125,16 @@ Example result table:
 
 ## Step 5: Adapt To A Ni EAM Potential
 
-Make a copy of the official example:
+Make a copy of the included starter example:
 
 ```bash
-cp -r ~/lammps-work/elastic_constants/ELASTIC ~/lammps-work/elastic_constants/Ni_EAM
+mkdir -p ~/lammps-work/elastic_constants
+cp -r examples/elastic_constants/runnable_lj_fcc ~/lammps-work/elastic_constants/Ni_EAM
 cd ~/lammps-work/elastic_constants/Ni_EAM
 ```
 
-Then edit the structure and potential files. The exact file names may differ,
-but the important LAMMPS settings look like this:
+Then edit the structure and potential settings. The important LAMMPS changes
+look like this:
 
 ```lammps
 units           metal
