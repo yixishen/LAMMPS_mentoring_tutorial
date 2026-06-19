@@ -7,7 +7,7 @@ to our metal/alloy work: EAM potentials, lattice constants, elastic response,
 defects, grain boundaries, stacking-fault-style displacements, and
 energy/structure analysis.
 
-Last checked: 2026-06-17. Software installers and package names change, so use
+Last checked: 2026-06-19. Software installers and package names change, so use
 the official documentation links in the reference section when something looks
 different on your machine.
 
@@ -316,7 +316,7 @@ Start with these official LAMMPS example directories:
 | `indent` | Local deformation and defect nucleation. | High-energy atoms near the indenter; centrosymmetry changes. |
 | `shear` | Deformation under shear, useful before stacking-fault or GB migration scripts. | Slip, void response, stress evolution. |
 | `crack` | Defect/fracture response in a solid. | Crack-tip disorder and stress concentration. |
-| `ELASTIC` | Computes zero-temperature elastic constants. | How potential choice affects stiffness. |
+| `ELASTIC` | Computes zero-temperature elastic constants. See `examples/elastic_constants/README.md` in this repo for a worked guide. | How potential choice affects stiffness. |
 | `ELASTIC_T` | Elastic constants at finite temperature. | Thermal fluctuations and averaging. |
 | `DIFFUSE` | Diffusion coefficient workflows. | Mean-squared displacement and temperature dependence. |
 | `prd` or `tad` | Vacancy diffusion and accelerated dynamics examples. | Rare-event thinking; not a first-week exercise. |
@@ -375,6 +375,21 @@ pair_coeff      * * eam/fs    path/to/FeCrNi_s.eam.fs    Cr Ni
 
 The element order at the end of `pair_coeff` must match LAMMPS atom types. A
 wrong order can produce a simulation that runs but is physically meaningless.
+
+### Worked Example: Elastic Constants
+
+For a guided exercise, use the local note:
+
+```text
+examples/elastic_constants/README.md
+```
+
+This example starts from the official LAMMPS `examples/ELASTIC` directory,
+explains the zero-temperature deformation/stress method, shows what students
+should record from the output, and gives a short checklist for adapting the
+script to a Ni or Ni-Cr EAM potential. This is a good bridge between "LAMMPS
+runs" and "the potential is trustworthy enough for defect or grain-boundary
+simulations."
 
 ## 9. Install OVITO
 
@@ -532,10 +547,11 @@ Goal: learn local structural analysis.
 
 Goal: understand why we validate potentials before using them.
 
-1. Run `ELASTIC`.
-2. Record elastic constants.
-3. Compare results from two potentials or two LAMMPS builds if available.
-4. Explain whether the potential is reasonable for the target material.
+1. Follow `examples/elastic_constants/README.md`.
+2. Run the official `ELASTIC` example.
+3. Record elastic constants, units, LAMMPS version, and potential file.
+4. Compare results from two potentials or two LAMMPS builds if available.
+5. Explain whether the potential is reasonable for the target material.
 
 ### Assignment 5: Project Bridge
 
@@ -571,6 +587,7 @@ Goal: prepare for our Ni/Cr or Fe/Ni/Cr workflow.
 - LAMMPS build packages: <https://docs.lammps.org/Build_package.html>
 - LAMMPS run basics: <https://docs.lammps.org/Run_basics.html>
 - LAMMPS official examples: <https://docs.lammps.org/Examples.html>
+- LAMMPS elastic constants howto: <https://docs.lammps.org/Howto_elastic.html>
 - OVITO installation: <https://www.ovito.org/docs/current/installation.html>
 - OVITO data import: <https://www.ovito.org/docs/current/usage/import.html>
 - OVITO LAMMPS dump reader:
