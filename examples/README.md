@@ -67,7 +67,9 @@ centrosymmetry or CNA/PTM to find non-FCC regions.
 
 Purpose: validate a potential before using it for production science.
 
-See the worked guide in `elastic_constants/README.md`.
+Start with the included runnable example in
+`elastic_constants/runnable_lj_fcc/`, then read the worked guide in
+`elastic_constants/README.md`.
 
 Record:
 
