@@ -67,6 +67,8 @@ centrosymmetry or CNA/PTM to find non-FCC regions.
 
 Purpose: validate a potential before using it for production science.
 
+See the worked guide in `elastic_constants/README.md`.
+
 Record:
 
 - LAMMPS version.
@@ -74,7 +76,16 @@ Record:
 - Crystal structure and lattice constant.
 - Elastic constants from the log/output.
 
-### 5. `voronoi` and `steinhardt`
+### 5. `ELASTIC_T`
+
+Purpose: understand why finite-temperature elastic constants need time
+averaging and careful statistics.
+
+Start here only after finishing the zero-temperature `ELASTIC` example. For
+finite-temperature work, compare the `BORN_MATRIX` and `DEFORMATION` examples
+inside the official `ELASTIC_T` directory.
+
+### 6. `voronoi` and `steinhardt`
 
 Purpose: learn local structure descriptors useful for grain boundaries,
 surfaces, and disordered regions.
