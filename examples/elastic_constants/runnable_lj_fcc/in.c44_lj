@@ -1,0 +1,37 @@
+# Estimate C44 for the relaxed FCC Lennard-Jones crystal.
+# Run in.relax_lj before this script.
+
+units           lj
+dimension       3
+boundary        p p p
+atom_style      atomic
+
+read_data       relaxed_lj_fcc.data
+
+mass            1 1.0
+pair_style      lj/cut 2.5
+pair_coeff      1 1 1.0 1.0 2.5
+
+neighbor        0.3 bin
+neigh_modify    every 1 delay 0 check yes
+
+change_box      all triclinic
+
+thermo          1
+thermo_style    custom step pe press pxy lx ly lz xy
+
+min_style       cg
+minimize        1.0e-12 1.0e-12 10000 100000
+
+variable        pxy_now equal pxy
+variable        pxy0 equal ${pxy_now}
+variable        gamma equal 0.001
+variable        tilt equal v_gamma*ly
+
+change_box      all xy delta ${tilt} remap units box
+minimize        1.0e-12 1.0e-12 10000 100000
+
+# LAMMPS pressure has the opposite sign from shear stress.
+variable        C44 equal -(pxy-v_pxy0)/v_gamma
+
+print           "C44 estimate (LJ pressure units) = ${C44}"
