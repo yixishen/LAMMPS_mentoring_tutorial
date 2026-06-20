@@ -1,0 +1,35 @@
+# Relax an FCC Lennard-Jones crystal before elastic-constant tests.
+# This creates relaxed_lj_fcc.data for the other scripts in this folder.
+
+units           lj
+dimension       3
+boundary        p p p
+atom_style      atomic
+
+variable        a equal 1.55
+
+lattice         fcc ${a}
+region          box block 0 8 0 8 0 8 units lattice
+create_box      1 box
+create_atoms    1 box
+
+mass            1 1.0
+
+pair_style      lj/cut 2.5
+pair_coeff      1 1 1.0 1.0 2.5
+
+neighbor        0.3 bin
+neigh_modify    every 1 delay 0 check yes
+
+thermo          10
+thermo_style    custom step pe press pxx pyy pzz lx ly lz
+
+fix             relax all box/relax iso 0.0 vmax 0.001
+min_style       cg
+minimize        1.0e-12 1.0e-12 10000 100000
+unfix           relax
+
+write_data      relaxed_lj_fcc.data
+write_restart   relaxed_lj_fcc.restart
+
+print           "Relaxed structure written to relaxed_lj_fcc.data"
