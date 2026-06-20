@@ -1,0 +1,46 @@
+# Estimate C11 and C12 for the relaxed FCC Lennard-Jones crystal.
+# Run in.relax_lj before this script.
+
+units           lj
+dimension       3
+boundary        p p p
+atom_style      atomic
+
+read_data       relaxed_lj_fcc.data
+
+mass            1 1.0
+pair_style      lj/cut 2.5
+pair_coeff      1 1 1.0 1.0 2.5
+
+neighbor        0.3 bin
+neigh_modify    every 1 delay 0 check yes
+
+thermo          1
+thermo_style    custom step pe press pxx pyy pzz lx ly lz
+
+min_style       cg
+minimize        1.0e-12 1.0e-12 10000 100000
+
+variable        pxx_now equal pxx
+variable        pyy_now equal pyy
+variable        pzz_now equal pzz
+variable        pxx0 equal ${pxx_now}
+variable        pyy0 equal ${pyy_now}
+variable        pzz0 equal ${pzz_now}
+
+variable        strain equal 0.001
+variable        scale equal 1.0+v_strain
+
+change_box      all x scale ${scale} remap units box
+minimize        1.0e-12 1.0e-12 10000 100000
+
+# LAMMPS pressure has the opposite sign from tensile stress.
+variable        C11 equal -(pxx-v_pxx0)/v_strain
+variable        C12_y equal -(pyy-v_pyy0)/v_strain
+variable        C12_z equal -(pzz-v_pzz0)/v_strain
+variable        C12 equal 0.5*(v_C12_y+v_C12_z)
+
+print           "C11 estimate (LJ pressure units) = ${C11}"
+print           "C12 estimate from y stress       = ${C12_y}"
+print           "C12 estimate from z stress       = ${C12_z}"
+print           "C12 averaged estimate            = ${C12}"
